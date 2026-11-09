@@ -64,3 +64,19 @@ td.orig{color:var(--sec);font-size:.88rem}
 .todo-list input:checked + span{text-decoration:line-through;color:var(--sec)}
 .legend{color:var(--sec);font-size:.95rem}
 @media (max-width:700px){html{font-size:16px}th,td{padding:.5rem .4rem}}
+/* requirement sections */
+h2{scroll-margin-top:4.5rem}
+.pending{color:var(--sec);opacity:.65}
+.tag{display:inline-block;font-size:.8rem;border-radius:999px;padding:.05rem .55rem;margin-left:.4rem;background:var(--card);color:var(--sec)}
+.tag.built{background:#e8f3ec;color:#1a6b4b}
+.req{margin-top:2.4rem}
+.req .quote{color:var(--sec);font-size:.92rem;margin:.1rem 0 .8rem}
+.placeholder{border:2px dashed var(--line);border-radius:14px;padding:1rem 1.3rem;background:#fff}
+.placeholder p{margin:.3rem 0}
+.back{font-size:.9rem;margin-top:.6rem}
+/* report-like content */
+.eq{text-align:center;font-size:1.1rem;margin:.6rem 0;padding:.35rem 0}
+blockquote{margin:.8rem 0 .8rem 1rem;padding:.2rem 1rem;border-left:4px solid var(--line);color:var(--ink);font-style:italic}
+figure img{margin-bottom:0}
+figure figcaption{margin:.15rem 0 .5rem}
+details.notes{border:1px dashed var(--line);background:#fff}
