@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="nn"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Mesh convergence</title><link rel="stylesheet" href="assets/style.css"></head><body><header class="top"><nav>
+<span class="brand">Viscous flow</span>
+<a class="nav" href="index.html">Oversikt</a>
+<a class="nav on" href="mesh.html">Mesh</a>
+<a class="nav soon" href="#">Domene</a>
+<a class="nav soon" href="#">Tidssteg</a>
+<a class="nav soon" href="#">Ramp-up</a>
+<a class="nav soon" href="#">Hovudstudie</a>
+</nav></header><main>
+<h1>Mesh convergence study</h1>
+<p class="lead">Wang sin case. Kor fint må meshet vere før svaret ikkje lenger endrar seg?</p>
+<div class="chips">
+<span class="chip">B = 8 m</span><span class="chip">B/D = 4 (D = 2 m)</span><span class="chip">heave</span>
+<span class="chip">ω̂ = 1,1 (T = 3,65 s, λ = 20,8 m)</span><span class="chip">a/B = 0,05 (a = 0,4 m)</span>
+<span class="chip">4 meshar: n = 3, 4, 6, 8</span><span class="chip">Δt = T/400</span>
+</div>
+
+<div class="card key"><h3>Kort fortalt</h3><ul>
+<li><b>Kreftene</b> (added mass og demping) er konvergerte: under 3 % frå n = 6 til n = 8.</li>
+<li><b>Bølgjene</b> konvergerer, men saktare: endringa blir mindre for kvar forfining, og bølgja langt unna boksen er framleis litt for låg.</li>
+<li><b>Valt mesh til hovudstudien: n = 6.</b> Innanfor 3 % av det finaste meshet, og ca. 1,7 gonger raskare å køyre.</li>
+</ul></div>
+
+<h2>1. Kva oppgåva ber om</h2>
+<table>
+<thead><tr><th>Krav</th><th>Status</th><th>Kvar</th></tr></thead>
+<tbody>
+<tr><td>Velje éin av casane<br><span class="orig">Select one of the cases</span></td><td><span class="dot done"></span>Gjort</td><td>Wang sin case</td></tr>
+<tr><td>Fire ulike meshar: ulikt tal celler per bølgjelengd og systematisk forfining rundt boksen<br><span class="orig">Generate 4 different meshes ...</span></td><td><span class="dot done"></span>Gjort</td><td>n = 3, 4, 6, 8</td></tr>
+<tr><td>Køyre og lage konvergensplott<br><span class="orig">Run simulations and produce convergence plots</span></td><td><span class="dot done"></span>Gjort</td><td>Figur 2 under</td></tr>
+<tr><td>Celler per bølgjelengd og per breidd<br><span class="orig">Consider number of cells per wavelength, and per body-width</span></td><td><span class="dot done"></span>Gjort</td><td>Tabellen i del 2</td></tr>
+<tr><td>Sjekke startvilkåret i ParaView<br><span class="orig">Hint: check initial condition in Paraview</span></td><td><span class="dot part"></span>Delvis</td><td>Du har sett det. Skjermbilete manglar</td></tr>
+<tr><td>Vertikal cellehøgd mot rørsleamplituden<br><span class="orig">Evaluate vertical grid size in terms of motion amplitude</span></td><td><span class="dot part"></span>Delvis</td><td>Figur 1 (nedre rad). Tekst manglar</td></tr>
+<tr><td>Celle- og tidsstegstorleik mot bølgjeperiode og -lengd<br><span class="orig">Consider grid size and time step size ...</span></td><td><span class="dot done"></span>Gjort</td><td>Δt-par i del 4</td></tr>
+</tbody></table>
+
+<h2>2. Kva vi gjorde</h2>
+<p>Éin knott, <b>n</b>: kor mange celler det er per boksbreidd i det grove bakgrunnsmeshet. Ved å auke n blir <i>alle</i> cellene mindre, både rundt boksen og i bølgjesona. Alt anna er likt: tanken (4 bølgjelengder), djupna, amplituden, tidssteget (T/400), laminær straum og opptrappinga (3 periodar).</p>
+<table>
+<thead><tr><th>n</th><th class="num">Celler per B</th><th class="num">Celler per λ</th><th class="num">Celler i meshet</th><th class="num">Cellestorleik</th></tr></thead>
+<tbody>
+<tr><td>3</td><td class="num">12</td><td class="num">31</td><td class="num">4 806</td><td class="num">0,67 m</td></tr>
+<tr><td>4</td><td class="num">16</td><td class="num">42</td><td class="num">8 828</td><td class="num">0,50 m</td></tr>
+<tr class="hl"><td>6 (valt)</td><td class="num">24</td><td class="num">62</td><td class="num">19 089</td><td class="num">0,33 m</td></tr>
+<tr><td>8</td><td class="num">32</td><td class="num">83</td><td class="num">34 309</td><td class="num">0,25 m</td></tr>
+</tbody></table>
+<p class="legend">Cellestorleiken gjeld sona rundt boksen og fri overflate (nivå 2). Celletalet er det OpenFOAM faktisk reknar på, etter at meshet er gjort 2D.</p>
+<figure><a href="assets/1_mesh_pictures.png" target="_blank"><img src="assets/1_mesh_pictures.png" alt="Meshet for n = 3, 4, 6 og 8"></a>
+<figcaption><b>Figur 1.</b> Øvst: meshet rundt boksen (grå). Nedst: fjernfeltet ved to bølgjelengder, der dei stipla linjene viser amplituden til bølgja. For dei grove meshane er bølgja mindre enn ei celle. Trykk på bildet for å forstørre.</figcaption></figure>
+
+<h2>3. Resultat</h2>
+<figure><a href="assets/2_mesh_convergence.png" target="_blank"><img src="assets/2_mesh_convergence.png" alt="Konvergens mot n"></a>
+<figcaption><b>Figur 2.</b> Avvik frå det finaste meshet (n = 8) for dei fem storleikane. Grønt band: innanfor 3 %. Valt mesh (n = 6) er innanfor 3 % på alt.</figcaption></figure>
+<table>
+<thead><tr><th>Avvik frå n = 8</th><th class="num">A33*</th><th class="num">B33*</th><th class="num">ζ ved 1,5B</th><th class="num">ζ ved 1λ</th><th class="num">ζ ved 2λ</th></tr></thead>
+<tbody>
+<tr><td>n = 3</td><td class="num">+1,6 %</td><td class="num">−2,4 %</td><td class="num">−7,0 %</td><td class="num">−11,5 %</td><td class="num">−16,5 %</td></tr>
+<tr><td>n = 4</td><td class="num">+0,8 %</td><td class="num">−3,9 %</td><td class="num">−3,9 %</td><td class="num">−6,2 %</td><td class="num">−8,2 %</td></tr>
+<tr class="hl"><td>n = 6</td><td class="num">−0,5 %</td><td class="num">−2,6 %</td><td class="num">−1,0 %</td><td class="num">−1,4 %</td><td class="num">−3,0 %</td></tr>
+</tbody></table>
+<div class="card"><h3>Slik les du det</h3><ul>
+<li><b>A33* og B33*</b> endrar seg lite uansett mesh. Meshet har lite å seie for kreftene.</li>
+<li><b>Bølgjene</b> veks når meshet blir finare, men stadig mindre: ved 2λ +10 %, så +5,7 %, så +3,0 %. Det er konvergens. Grunnen til at bølgja veks er at eit grovt mesh dempar henne numerisk.</li>
+<li>Bølgja minkar med avstanden frå boksen i alle meshane. I potensialteori skal ho vere omtrent lik overalt. Det er numerisk demping og er størst langt unna.</li>
+</ul></div>
+
+<h2>4. Fri overflate og tidssteg</h2>
+<figure><a href="assets/3_free_surface_refinement.png" target="_blank"><img src="assets/3_free_surface_refinement.png" alt="Forfining av fri overflate"></a>
+<figcaption><b>Figur 3.</b> Malen forfinar fri overflate berre ut til ±1,5 bølgjelengder. Samanlikna med forfining i heile tanken (n = 6) er kreftene like, men bølgja ved 2λ er 11 % lågare.</figcaption></figure>
+<div class="card warn"><h3>Tidssteget har meir å seie enn meshet</h3>
+<p>Same mesh med ulikt tidssteg: bølgja ved 2λ endrar seg 21 % (n = 3, T/200 til T/400), 10 % (n = 4, T/267 til T/400) og 5 % (n = 8, T/400 til T/533). Frå n = 6 og opp har tidssteget meir å seie for bølgjene enn meshet. Det er tidssteg-studien som svarar på det.</p></div>
+
+<h2>5. Spørsmål kapittelet må svare på</h2>
+<details><summary>Kvifor Wang sin case, og kvifor gjeld konklusjonane for dei andre?</summary>
+<p>Oppgåva seier «select one of the cases», og mesh-studien er tildelt Wang. Konklusjonane er gitt i celler per B og per λ, ikkje i meter, så dei kan overførast. Cecilie har kortast bølgjelengd i forhold til B (λ/B = 2,2 mot 2,6), så ho får ca. 15 % færre celler per λ. Det er ei lita feilkjelde som du kan nemne.</p></details>
+<details><summary>Kva er variert, og kva er halde fast?</summary>
+<p>Variert: n (3, 4, 6, 8). Fast: tank (4λ), djupn (0,69λ), amplitude (a/B = 0,05), Δt (T/400), laminær straum, Euler-tidsskjema og opptrapping (3 periodar).</p></details>
+<details><summary>Kva er målt?</summary>
+<p>A33* og B33* (added mass og demping, gjort dimensjonslause), og bølgjehøgda ζa/a ved tre sondar: 1,5B, B/2 + λ og B/2 + 2λ.</p></details>
+<details><summary>Har det konvergert?</summary>
+<p>Kreftene ja (under 3 % frå n = 6 til n = 8). Bølgjene er nær: endringa ved 2λ minkar frå 10 % til 5,7 % til 3,0 %, men bølgja er framleis litt for låg og avgrensa av tidssteget. Fire punkt gir ei usikker konvergensrate, så vi har ikkje rekna ut ein formell feilestimat (Richardson eller GCI).</p></details>
+<details><summary>Kva viser mesh_template?</summary>
+<p>At fri overflate må forfinast i heile tanken, ikkje berre nær boksen. Utan det er bølgja ved 2λ 11 % lågare, mens kreftene er like.</p></details>
+<details><summary>Kva mesh valde vi til hovudstudien, og kvifor?</summary>
+<p>n = 6. Det er det grovaste meshet som ligg innanfor ca. 3 % av n = 8 på alle storleikar, og det tek ca. 100 minutt mot ca. 175 minutt for n = 8. Valet er ei vurdering mellom nøyaktigheit og tid. Det er ikkje eit krav frå Babak.</p></details>
+<details><summary>Kva med cellehøgd mot amplituden?</summary>
+<p>Oppgåva ber om å vurdere vertikal cellestorleik mot rørsleamplituden. Ved n = 6 er cella ca. 0,33 m høg, rørsleamplituden er 0,4 m, og bølgjeamplituden ved 2λ er ca. 0,23 m. Det er altså berre 1 til 1,5 celle per amplitude. Det er den svakaste delen av meshet og forklarer at bølgjene blir dempa for mykje langt unna.</p></details>
+
+<h2>6. Feilkjelder og avgrensingar</h2>
+<div class="card"><ul>
+<li>Celler per bølgjelengd og celler rundt boksen er forfina saman (éin n). Vi har ikkje variert dei kvar for seg.</li>
+<li>Berre éin case, éin amplitude og laminær modell.</li>
+<li>Bølgja ved 2λ er ikkje heilt konvergert i mesh, og er avgrensa av tidssteget.</li>
+<li>Fire meshar gir ei usikker konvergensrate.</li>
+<li>Første serien (n = 3 og 4) hadde tidssteget skalert med n. Det er rydda opp ved nye køyringar med T/400.</li>
+<li>Meshet har soner med ulik forfining, og overgangane mellom dei kan gi litt støy. Eg har ikkje undersøkt det.</li>
+</ul></div>
+
+<h2>7. Å gjere til rapporten</h2>
+<ul class="todo-list">
+<li><label><input type="checkbox"><span>Ta skjermbilete av startvilkåret (t = 0, farga etter alpha.water) i ParaView</span></label></li>
+<li><label><input type="checkbox"><span>Velje ut figurar og tabell frå denne sida</span></label></li>
+<li><label><input type="checkbox"><span>Skrive avsnittet om cellehøgd mot amplitude</span></label></li>
+<li><label><input type="checkbox"><span>Skrive feilkjeldene (del 6)</span></label></li>
+<li><label><input type="checkbox"><span>Merke at studien er gjort for Wang sin case, og at han deler resultatet med gruppa</span></label></li>
+</ul>
+
+<h2>8. Filer</h2>
+<pre><code>C:\Users\oyv-f\TMR05_Numerical_methods\Openfoam_Øyvind\Sensitivity_study\Mesh_convergence_study_Wang
+  mesh_n3_T400  mesh_n4_T400  mesh_n6  mesh_n8_T400      casane
+  mesh_template                                         grovt fjernfelt
+  mesh_n3  mesh_n4  mesh_n8                             same mesh, anna tidssteg
+  figures\1_mesh_pictures.png, 2_mesh_convergence.png, 3_free_surface_refinement.png
+  figures\make_figures.py                               lagar figurane
+  OVERSIKT_mesh_studien.md                              tekst-versjonen av denne sida</code></pre>
+<p>Tabell med alle tala (køyr i Ubuntu, i mappa over):</p>
+<pre><code>python3 ../../collect_results.py mesh_n3_T400 mesh_n4_T400 mesh_n6 mesh_n8_T400 mesh_template</code></pre>
+</main><script src="assets/app.js"></script></body></html>
