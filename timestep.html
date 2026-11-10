@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Time step convergence</title><link rel="stylesheet" href="assets/style.css"></head><body><header class="top"><nav>
+<span class="brand">Viscous flow</span>
+<a class="nav" href="index.html">Overview</a>
+<a class="nav" href="mesh.html">Mesh</a>
+<a class="nav soon" href="#">Domain</a>
+<a class="nav on" href="timestep.html">Time step</a>
+<a class="nav soon" href="#">Ramp-up</a>
+<a class="nav soon" href="#">Main study</a>
+</nav></header><main>
+<h1>Time step convergence study</h1>
+<p class="lead">B = 6 m, &omega;&#770; = 1.0. How small must the time step be before the answer stops changing?</p>
+<div class="chips">
+<span class="chip">B = 6 m</span><span class="chip">B/D = 4 (D = 1.5 m)</span><span class="chip">heave</span>
+<span class="chip">&omega;&#770; = 1.0 (T = 3.47 s, &lambda; = 18.8 m)</span><span class="chip">a/B = 0.05 (a = 0.3 m)</span>
+<span class="chip">mesh n = 6</span><span class="chip">&Delta;t = T/100 to T/800, and Courant controlled</span>
+</div>
+
+<h2 id="requirements">The requirements</h2>
+<p class="legend">Each requirement has a section further down the page that explains how we answered it. The sections follow the report. Sections marked <span class="tag">coming</span> are built step by step as we go through the assignment, and the link becomes active when the section is built.</p>
+<table>
+<thead><tr><th>Requirement</th><th>Status</th><th>Short answer</th><th>Where we explain it</th></tr></thead>
+<tbody>
+<tr><td>Select one of the cases</td><td><span class="dot done"></span>Done</td><td>B = 6 m, &omega;&#770; = 1.0</td><td><a href="#r1">Section 1</a></td></tr>
+<tr><td>Generate 4 different meshes / 4 domain sizes / at least 4 time-steps</td><td><span class="dot done"></span>Done</td><td>T/100, T/200, T/400 and T/800</td><td><a href="#r2">Section 2</a></td></tr>
+<tr><td>Consider both fixed time-step and variable time-step with courant number</td><td><span class="dot done"></span>Done</td><td>Fixed steps, and two runs with a Courant limit (0.25 and 0.5)</td><td><a href="#r3">Section 3</a></td></tr>
+<tr><td>Change of time-step based on period, or courant number</td><td><span class="dot done"></span>Done</td><td>Δt = T/N, and a Courant-controlled Δt</td><td><span class="pending">Section 4</span><span class="tag">coming</span></td></tr>
+<tr><td>Produce convergence plots / compare the results</td><td><span class="dot done"></span>Done</td><td>Figure and table of the values against the time step, with an extrapolation</td><td><a href="#r5">Section 5</a></td></tr>
+<tr><td>Consider grid size and time step size in terms generated wave period and length</td><td><span class="dot done"></span>Done</td><td>Δt as part of the period, and cells per λ at n = 6</td><td><span class="pending">Section 6</span><span class="tag">coming</span></td></tr>
+<tr><td>The outcome of the sensitivity studies might have consequences on the choices in the main part</td><td><span class="dot done"></span>Done</td><td>Δt = T/800 is used in the main study</td><td><span class="pending">Section 7</span><span class="tag">coming</span></td></tr>
+<tr><td>Each student is assigned a sensitivity study to perform and share the results in the group</td><td><span class="dot todo"></span>Not done</td><td>To do: share the result and mark the source</td><td><span class="pending">Section 8</span><span class="tag">coming</span></td></tr>
+</tbody></table>
+<section class="req" id="r1"><h2>Section 1: Select one of the cases <span class="tag built">built</span></h2><p><span class="dot done"></span>Status: Done</p>
+<p>The assignment says to select one of the cases. We use the case with B = 6 m and &omega;&#770; = 1.0 (<a href="#tab-case">Table 1</a>).</p>
+<table id="tab-case">
+<thead><tr><th>Quantity</th><th>Value</th></tr></thead>
+<tbody>
+<tr><td>Box</td><td>B = 6 m, D = 1.5 m (B/D = 4), H = 6 m (H/B = 1), L = 18 m (L = 3B)</td></tr>
+<tr><td>Motion</td><td>Heave</td></tr>
+<tr><td>Frequency</td><td>&omega;&#770; = 1.0, T = 3.47 s, &lambda; = 18.8 m</td></tr>
+<tr><td>Amplitude</td><td>a/B = 0.05 (a = 0.3 m)</td></tr>
+<tr><td>Mesh</td><td>n = 6: fine cells B/(4n) = 0.25 m, about 75 fine cells per &lambda;</td></tr>
+<tr><td>Tank</td><td>162 m long (78 m = 4.15&lambda; from the box edge to each end wall), depth 12.4 m (0.66&lambda;)</td></tr>
+<tr><td>Ramp and length</td><td>Ramp 3T, simulation 10T = 34.7 s</td></tr>
+<tr><td>Time step</td><td>Varied in this study (Section 2 and 3)</td></tr>
+</tbody></table>
+<p class="legend"><b>Table 1.</b> The case used in the time step study.</p>
+
+<h3>How the values were found</h3>
+<p><b>Period T and wave length &lambda;.</b> From &omega;&#770; = &omega;&radic;(B/2g) we get</p>
+<div class="eq">&omega; = &omega;&#770; &radic;(2g/B) = 1.0 &radic;(2 &middot; 9.81 / 6) = 1.81 rad/s</div>
+<div class="eq">T = 2&pi;/&omega; = 2&pi;/1.81 = 3.475 s &asymp; 3.47 s</div>
+<div class="eq">&lambda; = gT&sup2;/(2&pi;) = 9.81 &middot; 3.47&sup2; / (2&pi;) = 18.8 m</div>
+<p><b>Draught, height, box length and amplitude.</b> D = B/(B/D) = 6/4 = 1.5 m, H = (H/B) B = 6 m, L = 3B = 18 m (scaled from the template, where the box is 15 m long for B = 5 m) and a = (a/B) B = 0.05 &middot; 6 = 0.3 m.</p>
+<p><b>Tank.</b> Four wave lengths of water on each side of the box, rounded up to a whole number of box widths so that the background cells of size B/n fit exactly:</p>
+<div class="eq">4&lambda; + B + 4&lambda; = 2 &middot; 75.2 + 6 = 156.4 m</div>
+<div class="eq">156.4 / 6 = 26.1 &rarr; 27, &nbsp; 27 &middot; 6 = 162 m</div>
+<p>From the box edge to each end wall the distance is (162 &minus; 6)/2 = 78 m = 4.15&lambda; (<a href="#fig-tank">Figure 1</a>).</p>
+<figure id="fig-tank">
+<svg viewBox="0 0 880 215" role="img" aria-label="The tank in the y direction" style="width:100%;height:auto;font-family:inherit">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#0b0b0b"/></marker></defs>
+<path d="M20,60 L20,125 L860,125 L860,60" fill="none" stroke="#0b0b0b" stroke-width="1.6"/>
+<line x1="20" y1="60" x2="860" y2="60" stroke="#0b0b0b" stroke-dasharray="6 5"/>
+<rect x="424.5" y="40" width="31" height="30" fill="#cfcdc4" stroke="#0b0b0b" stroke-width="1.4"/>
+<text x="440" y="30" text-anchor="middle" font-size="15" fill="#0b0b0b">B = 6 m</text>
+<g stroke="#9a998f" stroke-width="1"><line x1="20" y1="130" x2="20" y2="200"/><line x1="860" y1="130" x2="860" y2="200"/><line x1="424.5" y1="130" x2="424.5" y2="160"/><line x1="455.5" y1="130" x2="455.5" y2="160"/></g>
+<g stroke="#0b0b0b" stroke-width="1.4" marker-start="url(#ah)" marker-end="url(#ah)" fill="none">
+<line x1="22" y1="150" x2="422.5" y2="150"/><line x1="457.5" y1="150" x2="858" y2="150"/><line x1="22" y1="190" x2="858" y2="190"/></g>
+<g font-size="15" text-anchor="middle" fill="#0b0b0b">
+<text x="222" y="143">78 m = 4.15&lambda;</text><text x="658" y="143">78 m = 4.15&lambda;</text><text x="440" y="210">78 + 6 + 78 = 162 m</text></g>
+</svg>
+<figcaption><b>Figure 1.</b> The tank in the y direction (&lambda; = 18.8 m). The sketch is not to scale vertically.</figcaption></figure>
+<p><b>Depth.</b> The depth follows the template. Waves behave as deep water waves when the depth is larger than about half a wave length, so the depth is taken as &lambda;/2 plus twice the draught:</p>
+<div class="eq">&lambda;/2 + 2D = 9.4 + 3 = 12.4 m = 0.66&lambda;</div>
+<p><b>Mesh.</b> The mesh has n = 6 coarse cells per box width, so the fine cells have size B/(4n) = 6/24 = 0.25 m. This gives 4n&lambda;/B = 24 &middot; 18.8 / 6 &asymp; 75 fine cells per wave length. n = 6 is also the mesh used in the main study.</p>
+<p><b>Ramp.</b> The motion is ramped up over 3T, which means that the amplitude grows gradually (with a cosine shape) from zero to its full value. Without a ramp the box would go from rest to full speed in no time, and the acceleration in the first step would be very large. The value 3T is the default in the template.</p>
+<p><b>Length.</b> The simulation runs for 10T = 34.7 s, including the ramp. The length is set so that the waves reach the farthest probe and there are periods left with full amplitude to average over:</p>
+<div class="eq">ramp + travel time + 2 periods = 3T + 4.3T + 2T = 9.3T &rarr; 10T</div>
+<p>The travel time is the distance to the farthest probe divided by the group velocity of the waves, which is the speed of the wave energy:</p>
+<div class="eq">c<sub>g</sub> = d&omega;/dk</div>
+<p>For deep water the dispersion relation is &omega;&sup2; = gk. Differentiating gives 2&omega; d&omega; = g dk, so</p>
+<div class="eq">c<sub>g</sub> = d&omega;/dk = g/(2&omega;)</div>
+<p>The phase speed is c = &omega;/k = g/&omega;, so c<sub>g</sub> = c/2. For this case</p>
+<div class="eq">c = g/&omega; = 9.81/1.81 = 5.42 m/s, &nbsp;&nbsp; c<sub>g</sub> = g/(2&omega;) = 9.81/(2 &middot; 1.81) = 2.71 m/s</div>
+<p>and the travel time to the farthest probe (40.6 m) is</p>
+<div class="eq">40.6 / 2.71 = 15 s = 4.3T</div>
+<p>The results are taken from the last part of the simulation.</p>
+</section>
+<section class="req" id="r2"><h2>Section 2: At least four time steps <span class="tag built">built</span></h2><p class="quote">Generate 4 different meshes / 4 domain sizes / at least 4 time-steps</p><p><span class="dot done"></span>Status: Done</p>
+<p>The assignment asks for at least four time steps. We run the same case with four fixed time steps, each half the size of the previous one (<a href="#tab-fixed">Table 2</a>). The time step is given as a fraction of the period, &Delta;t = T/N, where N is the number of steps per period.</p>
+<table id="tab-fixed">
+<thead><tr><th>&Delta;t</th><th class="num">Steps per period</th><th class="num">&Delta;t [s]</th><th class="num">Steps in total</th><th class="num">Maximum Co</th><th class="num">Run time</th></tr></thead>
+<tbody>
+<tr><td>T/100</td><td class="num">100</td><td class="num">0.0347</td><td class="num">1000</td><td class="num">0.68</td><td class="num">59 min</td></tr>
+<tr><td>T/200</td><td class="num">200</td><td class="num">0.0174</td><td class="num">2000</td><td class="num">0.34</td><td class="num">1 h 42 min</td></tr>
+<tr><td>T/400</td><td class="num">400</td><td class="num">0.0087</td><td class="num">4000</td><td class="num">0.19</td><td class="num">2 h 49 min</td></tr>
+<tr><td>T/800</td><td class="num">800</td><td class="num">0.0043</td><td class="num">8000</td><td class="num">0.10</td><td class="num">4 h 50 min</td></tr>
+</tbody></table>
+<p class="legend"><b>Table 2.</b> The four fixed time steps. The simulation lasts 10T = 34.7 s. The run times are wall clock times with several cases running at the same time.</p>
+<p>Halving &Delta;t doubles the number of steps and halves the Courant number, because Co = |U|&Delta;t/&Delta;x. The run time grows by a factor of about 1.7 for each halving. At T/100 the Courant number is 0.68, which is below 1 but not far from it.</p>
+</section>
+<section class="req" id="r3"><h2>Section 3: Fixed and variable time step <span class="tag built">built</span></h2><p class="quote">Consider both fixed time-step and variable time-step with courant number</p><p><span class="dot done"></span>Status: Done</p>
+<p>The assignment also asks for a variable time step based on the Courant number. With a variable time step OpenFOAM chooses &Delta;t in every step so that the maximum Courant number stays below a limit (<code>maxCo</code>). We run two cases, with maxCo = 0.25 and 0.5. Both start from &Delta;t = T/400 (<a href="#tab-variable">Table 3</a>).</p>
+<table id="tab-variable">
+<thead><tr><th class="num">maxCo</th><th class="num">Average &Delta;t [s]</th><th>Equivalent fixed step</th><th class="num">Steps in total</th><th class="num">Maximum Co reached</th><th class="num">Run time</th></tr></thead>
+<tbody>
+<tr><td class="num">0.25</td><td class="num">0.0204</td><td>T/170</td><td class="num">1704</td><td class="num">0.32</td><td class="num">1 h 29 min</td></tr>
+<tr><td class="num">0.5</td><td class="num">0.0429</td><td>T/81</td><td class="num">809</td><td class="num">0.66</td><td class="num">49 min</td></tr>
+</tbody></table>
+<p class="legend"><b>Table 3.</b> The two runs with a variable time step. The average &Delta;t is the simulated time divided by the number of steps.</p>
+<p>The time step becomes small when the velocities are large and large when they are small, so the average is much larger than the starting value. The maximum Courant number in the log is higher than the limit (0.32 and 0.66). We have not looked into why. The variable time step runs cost less than the fixed T/200 and T/100 runs, and <a href="#r5">Section 5</a> shows how accurate they are.</p>
+</section>
+<section class="req" id="r4"><h2>Section 4: Time step from period or Courant number <span class="tag">not built yet</span></h2><p class="quote">Change of time-step based on period, or courant number</p><p><span class="dot done"></span>Status: Done</p><div class="placeholder"><p><b>Not built yet.</b> We build this section when we go through this requirement.</p><p>What we have so far: Δt = T/N, and a Courant-controlled Δt</p></div></section>
+<section class="req" id="r5"><h2>Section 5: Convergence plots <span class="tag built">built</span></h2><p class="quote">Produce convergence plots / compare the results</p><p><span class="dot done"></span>Status: Done</p>
+<p>The figure shows the added mass, the damping and the wave height for the four fixed time steps (<a href="#fig-values">Figure 2</a>) and the values are in <a href="#tab-values">Table 4</a>. The x axis is the time step, so the limit of a very small time step is at the left edge. The squares are the variable time step runs, placed at their average &Delta;t. The dashed line is a straight line through the two finest steps, continued to &Delta;t = 0.</p>
+<figure id="fig-values">
+<img src="assets/ts_values.png" alt="A33, B33 and wave height against the time step">
+<figcaption><b>Figure 2.</b> Added mass, damping and wave height against the time step (B = 6 m, &omega;&#770; = 1.0, a/B = 0.05, mesh n = 6). The four probes are at y = 1.5B, 3.5B, B/2 + &lambda; and B/2 + 2&lambda;.</figcaption></figure>
+<table id="tab-values">
+<thead><tr><th>&Delta;t</th><th class="num">A33*</th><th class="num">B33*</th><th class="num">&zeta;a/a at 1.5B</th><th class="num">at 3.5B</th><th class="num">at B/2 + &lambda;</th><th class="num">at B/2 + 2&lambda;</th></tr></thead>
+<tbody>
+<tr><td>T/100</td><td class="num">1.541</td><td class="num">0.872</td><td class="num">0.676</td><td class="num">0.496</td><td class="num">0.487</td><td class="num">0.318</td></tr>
+<tr><td>T/200</td><td class="num">1.551</td><td class="num">0.813</td><td class="num">0.717</td><td class="num">0.594</td><td class="num">0.590</td><td class="num">0.469</td></tr>
+<tr><td>T/400</td><td class="num">1.558</td><td class="num">0.782</td><td class="num">0.740</td><td class="num">0.654</td><td class="num">0.651</td><td class="num">0.573</td></tr>
+<tr><td>T/800</td><td class="num">1.564</td><td class="num">0.765</td><td class="num">0.753</td><td class="num">0.688</td><td class="num">0.688</td><td class="num">0.638</td></tr>
+<tr class="hl"><td>Extrapolated (&Delta;t &rarr; 0)</td><td class="num">1.570</td><td class="num">0.749</td><td class="num">0.766</td><td class="num">0.723</td><td class="num">0.724</td><td class="num">0.703</td></tr>
+<tr><td>Variable, maxCo 0.25 (T/170)</td><td class="num">1.551</td><td class="num">0.819</td><td class="num">0.713</td><td class="num">0.582</td><td class="num">0.576</td><td class="num">0.439</td></tr>
+<tr><td>Variable, maxCo 0.5 (T/81)</td><td class="num">1.537</td><td class="num">0.892</td><td class="num">0.660</td><td class="num">0.464</td><td class="num">0.454</td><td class="num">0.269</td></tr>
+</tbody></table>
+<p class="legend"><b>Table 4.</b> The results for the time step study.</p>
+<p><b>What it shows.</b></p>
+<ul>
+<li>A33* changes by less than 2 % over the whole range.</li>
+<li>B33* and the waves depend much more on the time step. When &Delta;t is divided by 8, B33* falls by 12 % and the wave at B/2 + 2&lambda; doubles (0.318 to 0.638).</li>
+<li>B33* follows a straight line in &Delta;t. The changes are 0.059, 0.031 and 0.016, which halve each time, as for a scheme that is first order in time (Euler). The extrapolated value is 0.749, and T/800 is 2 % above it.</li>
+<li>The waves do not halve their changes (0.151, 0.104 and 0.065 at B/2 + 2&lambda;; they shrink by a factor of about 1.5). The straight line value 0.70 is therefore probably too low, and the wave at B/2 + 2&lambda; is still more than 9 % below the limit at T/800.</li>
+<li>The variable time step runs lie close to the fixed time step curves when they are plotted at their average &Delta;t. A Courant limit gives about the same accuracy as a fixed &Delta;t of the same average size.</li>
+</ul>
+<p>The probes in these runs are at 1.5B, 3.5B, B/2 + &lambda; and B/2 + 2&lambda;. The probes at 2.5B and 5.5B are only in the main study.</p>
+</section>
+<section class="req" id="r6"><h2>Section 6: Time step and grid against period and length <span class="tag">not built yet</span></h2><p class="quote">Consider grid size and time step size in terms generated wave period and length</p><p><span class="dot done"></span>Status: Done</p><div class="placeholder"><p><b>Not built yet.</b> We build this section when we go through this requirement.</p><p>What we have so far: Δt as part of the period, and cells per λ at n = 6</p></div></section>
+<section class="req" id="r7"><h2>Section 7: Use in the main study <span class="tag">not built yet</span></h2><p class="quote">The outcome of the sensitivity studies might have consequences on the choices in the main part</p><p><span class="dot done"></span>Status: Done</p><div class="placeholder"><p><b>Not built yet.</b> We build this section when we go through this requirement.</p><p>What we have so far: Δt = T/800 is used in the main study</p></div></section>
+<section class="req" id="r8"><h2>Section 8: Share with the group <span class="tag">not built yet</span></h2><p class="quote">Each student is assigned a sensitivity study to perform and share the results in the group</p><p><span class="dot todo"></span>Status: Not done</p><div class="placeholder"><p><b>Not built yet.</b> We build this section when we go through this requirement.</p><p>What we have so far: To do: share the result and mark the source</p></div></section>
+</main><script src="assets/app.js"></script></body></html>
