@@ -73,7 +73,10 @@
 <figcaption><b>Figure 1.</b> The tank in the y direction (&lambda; = 18.8 m). The sketch is not to scale vertically.</figcaption></figure>
 <p><b>Depth.</b> The depth follows the template. Waves behave as deep water waves when the depth is larger than about half a wave length, so the depth is taken as &lambda;/2 plus twice the draught:</p>
 <div class="eq">&lambda;/2 + 2D = 9.4 + 3 = 12.4 m = 0.66&lambda;</div>
-<p><b>Mesh.</b> The mesh has n = 6 coarse cells per box width, so the fine cells have size B/(4n) = 6/24 = 0.25 m. This gives 4n&lambda;/B = 24 &middot; 18.8 / 6 &asymp; 75 fine cells per wave length. n = 6 is also the mesh used in the main study.</p>
+<p><b>Mesh.</b> The mesh has n = 6 coarse cells per box width, so the fine cells have size B/(4n) = 6/24 = 0.25 m. This gives 4n&lambda;/B = 24 &middot; 18.8 / 6 &asymp; 75 fine cells per wave length (<a href="#fig-tsmesh">Figure 2</a>). We use n = 6 as a compromise between accuracy and run time. In the mesh study (B = 8 m) n = 6 differs from n = 8 by 0.5 % in the added mass, 2.6 % in the damping and 1 to 3 % in the waves, and n = 8 takes about 1.7 times longer. n = 6 is also the mesh used in the main study, so the time step study gives the time step error for that mesh. The mesh study shows that the results still change when n increases, so n = 6 is not a converged mesh.</p>
+<figure id="fig-tsmesh">
+<img src="assets/ts_mesh.png" alt="The mesh of the time step study">
+<figcaption><b>Figure 2.</b> The mesh of the time step study (n = 6, B = 6 m): (a) the whole tank and (b) a close-up around the box. The finest cells (level 2) are in the strip along the free surface and on the surface of the box.</figcaption></figure>
 <p><b>Ramp.</b> The motion is ramped up over 3T, which means that the amplitude grows gradually (with a cosine shape) from zero to its full value. Without a ramp the box would go from rest to full speed in no time, and the acceleration in the first step would be very large. The value 3T is the default in the template.</p>
 <p><b>Length.</b> The simulation runs for 10T = 34.7 s, including the ramp. The length is set so that the waves reach the farthest probe and there are periods left with full amplitude to average over:</p>
 <div class="eq">ramp + travel time + 2 periods = 3T + 4.3T + 2T = 9.3T &rarr; 10T</div>
@@ -112,10 +115,10 @@
 </section>
 <section class="req" id="r4"><h2>Section 4: Time step from period or Courant number <span class="tag">not built yet</span></h2><p class="quote">Change of time-step based on period, or courant number</p><p><span class="dot done"></span>Status: Done</p><div class="placeholder"><p><b>Not built yet.</b> We build this section when we go through this requirement.</p><p>What we have so far: Δt = T/N, and a Courant-controlled Δt</p></div></section>
 <section class="req" id="r5"><h2>Section 5: Convergence plots <span class="tag built">built</span></h2><p class="quote">Produce convergence plots / compare the results</p><p><span class="dot done"></span>Status: Done</p>
-<p>The figure shows the added mass, the damping and the wave height for the four fixed time steps (<a href="#fig-values">Figure 2</a>) and the values are in <a href="#tab-values">Table 4</a>. The x axis is the time step, so the limit of a very small time step is at the left edge. The squares are the variable time step runs, placed at their average &Delta;t. The dashed line is a straight line through the two finest steps, continued to &Delta;t = 0.</p>
+<p>The figure shows the added mass, the damping and the wave height for the four fixed time steps (<a href="#fig-values">Figure 3</a>) and the values are in <a href="#tab-values">Table 4</a>. The x axis is the time step, so the limit of a very small time step is at the left edge. The squares are the variable time step runs, placed at their average &Delta;t. The dashed line is a straight line through the two finest steps, continued to &Delta;t = 0.</p>
 <figure id="fig-values">
 <img src="assets/ts_values.png" alt="A33, B33 and wave height against the time step">
-<figcaption><b>Figure 2.</b> Added mass, damping and wave height against the time step (B = 6 m, &omega;&#770; = 1.0, a/B = 0.05, mesh n = 6). The four probes are at y = 1.5B, 3.5B, B/2 + &lambda; and B/2 + 2&lambda;.</figcaption></figure>
+<figcaption><b>Figure 3.</b> Added mass, damping and wave height against the time step (B = 6 m, &omega;&#770; = 1.0, a/B = 0.05, mesh n = 6). The four probes are at y = 1.5B, 3.5B, B/2 + &lambda; and B/2 + 2&lambda;.</figcaption></figure>
 <table id="tab-values">
 <thead><tr><th>&Delta;t</th><th class="num">A33*</th><th class="num">B33*</th><th class="num">&zeta;a/a at 1.5B</th><th class="num">at 3.5B</th><th class="num">at B/2 + &lambda;</th><th class="num">at B/2 + 2&lambda;</th></tr></thead>
 <tbody>
