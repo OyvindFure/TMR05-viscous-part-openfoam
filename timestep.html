@@ -109,7 +109,7 @@
 <p>The Courant number is a stability limit and does not say how large the time error is. The number of steps per period is not fixed, and &Delta;t can become large when the velocities are low.</p>
 </section>
 <section class="req" id="r3"><h2>Section 3: Convergence plots <span class="tag built">built</span></h2><p class="quote">Produce convergence plots / compare the results</p><p><span class="dot done"></span>Status: Done</p>
-<p>The figure shows the added mass, the damping and the wave height for the four fixed time steps (<a href="#fig-values">Figure 3</a>) and the values are in <a href="#tab-values">Table 4</a>. The x axis is the time step, so the limit of a very small time step is at the left edge. The squares are the variable time step runs, placed at their average &Delta;t. The dashed line is a straight line through the two finest steps, continued to &Delta;t = 0.</p>
+<p>The figure shows the added mass, the damping and the wave height for the four fixed time steps (<a href="#fig-values">Figure 3</a>) and the values are in <a href="#tab-values">Table 4</a>. The x axis is the time step, so the limit of a very small time step is at the left edge. The squares are the variable time step runs, placed at their average &Delta;t.</p>
 <figure id="fig-values">
 <img src="assets/ts_values.png" alt="A33, B33 and wave height against the time step">
 <figcaption><b>Figure 3.</b> Added mass, damping and wave height against the time step (B = 6 m, &omega;&#770; = 1.0, a/B = 0.05, mesh n = 6). The four probes are at y = 1.5B, 3.5B, B/2 + &lambda; and B/2 + 2&lambda;.</figcaption></figure>
@@ -120,7 +120,6 @@
 <tr><td>T/200</td><td class="num">1.551</td><td class="num">0.813</td><td class="num">0.717</td><td class="num">0.594</td><td class="num">0.590</td><td class="num">0.469</td></tr>
 <tr><td>T/400</td><td class="num">1.558</td><td class="num">0.782</td><td class="num">0.740</td><td class="num">0.654</td><td class="num">0.651</td><td class="num">0.573</td></tr>
 <tr><td>T/800</td><td class="num">1.564</td><td class="num">0.765</td><td class="num">0.753</td><td class="num">0.688</td><td class="num">0.688</td><td class="num">0.638</td></tr>
-<tr class="hl"><td>Extrapolated (&Delta;t &rarr; 0)</td><td class="num">1.570</td><td class="num">0.749</td><td class="num">0.766</td><td class="num">0.723</td><td class="num">0.724</td><td class="num">0.703</td></tr>
 <tr><td>Variable, maxCo 0.25 (T/170)</td><td class="num">1.551</td><td class="num">0.819</td><td class="num">0.713</td><td class="num">0.582</td><td class="num">0.576</td><td class="num">0.439</td></tr>
 <tr><td>Variable, maxCo 0.5 (T/81)</td><td class="num">1.537</td><td class="num">0.892</td><td class="num">0.660</td><td class="num">0.464</td><td class="num">0.454</td><td class="num">0.269</td></tr>
 </tbody></table>
@@ -129,8 +128,7 @@
 <ul>
 <li>A33* changes by less than 2 % over the whole range.</li>
 <li>B33* and the waves depend much more on the time step. When &Delta;t is divided by 8, B33* falls by 12 % and the wave at B/2 + 2&lambda; doubles (0.318 to 0.638).</li>
-<li>B33* follows a straight line in &Delta;t. The changes are 0.059, 0.031 and 0.016, which halve each time, as for a scheme that is first order in time (Euler). The extrapolated value is 0.749, and T/800 is 2 % above it.</li>
-<li>The waves do not halve their changes (0.151, 0.104 and 0.065 at B/2 + 2&lambda;; they shrink by a factor of about 1.5). The straight line value 0.70 is therefore probably too low, and the wave at B/2 + 2&lambda; is still more than 9 % below the limit at T/800.</li>
+<li>The changes in the damping halve for each halving of &Delta;t (0.059, 0.031 and 0.016). The waves change more slowly (0.151, 0.104 and 0.065 at B/2 + 2&lambda;) and are not converged at T/800: the wave at B/2 + 2&lambda; still changes by 11 % between T/400 and T/800.</li>
 <li>The variable time step runs lie close to the fixed time step curves when they are plotted at their average &Delta;t. A Courant limit gives about the same accuracy as a fixed &Delta;t of the same average size.</li>
 </ul>
 <p>The probes in these runs are at 1.5B, 3.5B, B/2 + &lambda; and B/2 + 2&lambda;. The probes at 2.5B and 5.5B are only in the main study.</p>
