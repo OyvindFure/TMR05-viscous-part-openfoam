@@ -23,9 +23,9 @@
 <thead><tr><th>Requirement</th><th>Status</th><th>Short answer</th><th>Where we explain it</th></tr></thead>
 <tbody>
 <tr><td>Select one of the cases</td><td><span class="dot done"></span>Done</td><td>B = 6 m, &omega;&#770; = 1.0</td><td><a href="#r1">Section 1</a></td></tr>
-<tr><td>Generate at least 4 time-steps. Consider both fixed time-step and variable time-step with courant number</td><td><span class="dot done"></span>Done</td><td>Four fixed time steps (T/100 to T/800) and two runs with a Courant limit (0.25 and 0.5)</td><td><a href="#r2">Section 2</a>, <a href="#r3">Section 3</a></td></tr>
-<tr><td>Produce convergence plots / compare the results. Consider grid size and time step size in terms generated wave period and length</td><td><span class="dot done"></span>Done</td><td>Figure and table of the values against the time step, with &Delta;t given as a fraction of the period</td><td><a href="#r4">Section 4</a></td></tr>
-<tr><td>The outcome of the sensitivity studies might have consequences on the choices in the main part. Each student is assigned a sensitivity study to perform and share the results in the group</td><td><span class="dot part"></span>Partly</td><td>The time step is used in the main study. Sharing with the group is not done.</td><td><span class="pending">Section 5</span><span class="tag">coming</span></td></tr>
+<tr><td>Generate at least 4 time-steps. Consider both fixed time-step and variable time-step with courant number</td><td><span class="dot done"></span>Done</td><td>Four fixed time steps (T/100 to T/800) and two runs with a Courant limit (0.25 and 0.5)</td><td><a href="#r2">Section 2</a></td></tr>
+<tr><td>Produce convergence plots / compare the results. Consider grid size and time step size in terms generated wave period and length</td><td><span class="dot done"></span>Done</td><td>Figure and table of the values against the time step, with &Delta;t given as a fraction of the period</td><td><a href="#r3">Section 3</a></td></tr>
+<tr><td>The outcome of the sensitivity studies might have consequences on the choices in the main part. Each student is assigned a sensitivity study to perform and share the results in the group</td><td><span class="dot part"></span>Partly</td><td>The time step is used in the main study. Sharing with the group is not done.</td><td><span class="pending">Section 4</span><span class="tag">coming</span></td></tr>
 </tbody></table>
 <section class="req" id="r1"><h2>Section 1: Select one of the cases <span class="tag built">built</span></h2><p><span class="dot done"></span>Status: Done</p>
 <p>The assignment says to select one of the cases. We use the case with B = 6 m and &omega;&#770; = 1.0 (<a href="#tab-case">Table 1</a>).</p>
@@ -85,8 +85,10 @@
 <p>and the travel time to the farthest probe (40.6 m) is</p>
 <div class="eq">40.6 / 2.71 = 15 s = 4.3T</div>
 </section>
-<section class="req" id="r2"><h2>Section 2: At least four time steps <span class="tag built">built</span></h2><p class="quote">Generate at least 4 time-steps</p><p><span class="dot done"></span>Status: Done</p>
-<p>The assignment asks for at least four time steps. We run the same case with four fixed time steps, each half the size of the previous one (<a href="#tab-fixed">Table 2</a>). The time step is given as a fraction of the period, &Delta;t = T/N, where N is the number of steps per period.</p>
+<section class="req" id="r2"><h2>Section 2: Fixed and variable time steps <span class="tag built">built</span></h2><p class="quote">Generate at least 4 time-steps. Consider both fixed time-step and variable time-step with courant number</p><p><span class="dot done"></span>Status: Done</p>
+<p>We run the same case with four fixed time steps, each half the size of the previous one (<a href="#tab-fixed">Table 2</a>). The time step is given as &Delta;t = T/N, where N is the number of steps per period. The time steps are compared with the Courant number, which is the number of cells the fluid moves in one time step:</p>
+<div class="eq">Co = |U| &Delta;t / &Delta;x</div>
+<p>where U is the fluid velocity and &Delta;x is the cell size. &ldquo;Maximum Co&rdquo; is the largest value in any cell during the simulation.</p>
 <table id="tab-fixed">
 <thead><tr><th>&Delta;t</th><th class="num">Steps per period</th><th class="num">&Delta;t [s]</th><th class="num">Steps in total</th><th class="num">Maximum Co</th><th class="num">Run time</th></tr></thead>
 <tbody>
@@ -96,10 +98,7 @@
 <tr><td>T/800</td><td class="num">800</td><td class="num">0.0043</td><td class="num">8000</td><td class="num">0.10</td><td class="num">4 h 50 min</td></tr>
 </tbody></table>
 <p class="legend"><b>Table 2.</b> The four fixed time steps. The simulation lasts 10T = 34.7 s. The run times are wall clock times with several cases running at the same time.</p>
-<p>Halving &Delta;t doubles the number of steps and halves the Courant number, because Co = |U|&Delta;t/&Delta;x. The run time grows by a factor of about 1.7 for each halving. At T/100 the Courant number is 0.68, which is below 1 but not far from it.</p>
-</section>
-<section class="req" id="r3"><h2>Section 3: Fixed and variable time step <span class="tag built">built</span></h2><p class="quote">Consider both fixed time-step and variable time-step with courant number</p><p><span class="dot done"></span>Status: Done</p>
-<p>The assignment also asks for a variable time step based on the Courant number. With a variable time step OpenFOAM chooses &Delta;t in every step so that the maximum Courant number stays below a limit (<code>maxCo</code>). We run two cases, with maxCo = 0.25 and 0.5. Both start from &Delta;t = T/400 (<a href="#tab-variable">Table 3</a>).</p>
+<p>For the variable time step OpenFOAM chooses &Delta;t in every step so that the maximum Courant number stays below a limit, <code>maxCo</code>. The Courant number depends on the velocity, so OpenFOAM makes &Delta;t small when the velocities are large and large when they are small. We run two cases, with maxCo = 0.25 and 0.5, both starting from T/400 (<a href="#tab-variable">Table 3</a>).</p>
 <table id="tab-variable">
 <thead><tr><th class="num">maxCo</th><th class="num">Average &Delta;t [s]</th><th>Equivalent fixed step (average)</th><th class="num">Steps in total</th><th class="num">Maximum Co reached</th><th class="num">Run time</th></tr></thead>
 <tbody>
@@ -107,9 +106,9 @@
 <tr><td class="num">0.5</td><td class="num">0.0429</td><td>T/81</td><td class="num">809</td><td class="num">0.66</td><td class="num">49 min</td></tr>
 </tbody></table>
 <p class="legend"><b>Table 3.</b> The two runs with a variable time step. The average &Delta;t is the simulated time divided by the number of steps.</p>
-<p>The time step becomes small when the velocities are large and large when they are small, so the average is much larger than the starting value. The maximum Courant number in the log is higher than the limit (0.32 and 0.66). We have not looked into why. The variable time step runs cost less than the fixed T/200 and T/100 runs, and <a href="#r4">Section 4</a> shows how accurate they are.</p>
+<p>The Courant number is a stability limit and does not say how large the time error is. The number of steps per period is not fixed, and &Delta;t can become large when the velocities are low.</p>
 </section>
-<section class="req" id="r4"><h2>Section 4: Convergence plots <span class="tag built">built</span></h2><p class="quote">Produce convergence plots / compare the results</p><p><span class="dot done"></span>Status: Done</p>
+<section class="req" id="r3"><h2>Section 3: Convergence plots <span class="tag built">built</span></h2><p class="quote">Produce convergence plots / compare the results</p><p><span class="dot done"></span>Status: Done</p>
 <p>The figure shows the added mass, the damping and the wave height for the four fixed time steps (<a href="#fig-values">Figure 3</a>) and the values are in <a href="#tab-values">Table 4</a>. The x axis is the time step, so the limit of a very small time step is at the left edge. The squares are the variable time step runs, placed at their average &Delta;t. The dashed line is a straight line through the two finest steps, continued to &Delta;t = 0.</p>
 <figure id="fig-values">
 <img src="assets/ts_values.png" alt="A33, B33 and wave height against the time step">
@@ -136,5 +135,5 @@
 </ul>
 <p>The probes in these runs are at 1.5B, 3.5B, B/2 + &lambda; and B/2 + 2&lambda;. The probes at 2.5B and 5.5B are only in the main study.</p>
 </section>
-<section class="req" id="r5"><h2>Section 5: Use of the result and sharing <span class="tag">not built yet</span></h2><p class="quote">The outcome of the sensitivity studies might have consequences on the choices in the main part. Each student is assigned a sensitivity study to perform and share the results in the group</p><p><span class="dot part"></span>Status: Partly</p><div class="placeholder"><p><b>Not built yet.</b> We build this section when we go through this requirement.</p><p>What we have so far: the time step T/800 is used in the main study. Sharing the result with the group and marking the source is not done.</p></div></section>
+<section class="req" id="r4"><h2>Section 4: Use of the result and sharing <span class="tag">not built yet</span></h2><p class="quote">The outcome of the sensitivity studies might have consequences on the choices in the main part. Each student is assigned a sensitivity study to perform and share the results in the group</p><p><span class="dot part"></span>Status: Partly</p><div class="placeholder"><p><b>Not built yet.</b> We build this section when we go through this requirement.</p><p>What we have so far: the time step T/800 is used in the main study. Sharing the result with the group and marking the source is not done.</p></div></section>
 </main><script src="assets/app.js"></script></body></html>
